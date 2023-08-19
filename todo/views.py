@@ -2,8 +2,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic, View
 
+import os
+
 from todo.forms import TagForm, TaskForm
 from todo.models import Task, Tag
+
+SUCCESS_URL = os.getenv("SUCCESS_URL")
 
 
 class TaskListView(generic.ListView):
@@ -18,7 +22,7 @@ class TaskCreateView(generic.CreateView):
     model = Task
     form_class = TaskForm
     template_name = "todo/task_form.html"
-    success_url = "http://127.0.0.1:8000/task/create"
+    success_url = f"{SUCCESS_URL}/task/create"
 
 
 class TaskUpdateView(generic.UpdateView):
@@ -46,7 +50,7 @@ class TagCreateView(generic.CreateView):
     model = Tag
     form_class = TagForm
     template_name = "todo/tag_form.html"
-    success_url = "http://127.0.0.1:8000/tags/create"
+    success_url = f"{SUCCESS_URL}/tags/create"
 
 
 class TagUpdateView(generic.UpdateView):
@@ -65,11 +69,14 @@ class TagDeleteView(generic.DeleteView):
 
 class TaskChangeStatusView(View):
     def post(self, request, pk):
-        task = Task.objects.get(id=pk)
-        task.is_done = not task.is_done
-        task.save()
-
-        return redirect(reverse_lazy('todo:task-list'), permanent=True)
+        task_toggle_status(pk=pk)
+        return redirect(reverse_lazy("todo:task-list"), permanent=True)
 
     def get(self, request):
-        return redirect(reverse_lazy('todo:task-list'), permanent=True)
+        return redirect(reverse_lazy("todo:task-list"), permanent=True)
+
+
+def task_toggle_status(pk):
+    task = get_object_or_404(Task, id=pk)
+    task.is_done = not task.is_done
+    task.save()

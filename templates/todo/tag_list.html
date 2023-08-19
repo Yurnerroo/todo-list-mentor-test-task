@@ -19,12 +19,12 @@
                     <td>{{ tag.name }}</td>
                     <td>
                         <button style="background: gray" class="btn"><a role="button" style="color: white"
-                                                                        href="{% url 'todo:task_change_status' pk=tag.id %}">Update</a>
+                                                                        href="{% url 'todo:tag-update' pk=tag.id %}">Update</a>
                         </button>
                     </td>
                     <td>
                         <button style="background: gray" class="btn"><a role="button" style="color: white"
-                                                                        href="{% url 'todo:task_change_status' pk=tag.id %}">Delete</a>
+                                                                        href="{% url 'todo:tag-delete' pk=tag.id %}">Delete</a>
                         </button>
                     </td>
 
